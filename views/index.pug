@@ -1,11 +1,44 @@
 extends layout
-
 block content
-  h1= title
-  h3 Current log:
-  pre #{watsonLog}
-  h3 Current status
-  pre #{watsonStat}
-  h3 Weekly report
-  pre #{watsonReport}
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
 
+  h1= title
+  h2 Current log:
+  for daySummary in watsonLog
+        -var tasks = daySummary.items
+        -var day   = daySummary.date + ": " + daySummary.totalTime
+        h3 #{day}
+        div
+          table
+            thead
+              tr(class='header')
+                th Start
+                th Stop
+                th Duration
+                th Project
+                th Tags
+            tbody
+                for item in daySummary.items
+                  tr(class='workitem')
+                    td #{item.startTime}
+                    td #{item.stopTime}
+                    td #{item.duration}
+                    td
+                      -var reloadJs  = "window.location.reload(); return false;";
+                      -var onStartJs = item.isActive ? reloadJs : ("$.post('toggle', {project: '" + item.project + "', type:'start' }).always(function(){" + reloadJs + "}); return false;");
+                      -var stopAction = item.isJustStarted ? "cancel (60s left)" : "stop";
+                      -var onCancelJs = "$.post('toggle', {project: 'none', type:'cancel' }).always(function() {" + reloadJs + "}); return false;";
+                      -var onStopJs   = "$.post('toggle', {project: 'none', type:'stop' }).always(function(){" + reloadJs + "}); return false;";
+                      -var linkClass = item.isActive ? "button" : "buttonStart";
+
+                      a(class=linkClass href='#' onclick=onStartJs) #{item.project}
+                      if item.isActive
+                         =" "
+                         a(class='buttonStop' href='#' onclick=item.isJustStarted ? onCancelJs : onStopJs) #{stopAction}
+
+                      if item.isJustStarted
+                         script setTimeout(function(){ $("a.buttonStop").html('stop'); $("a.buttonStop").attr("onclick", "return stopItem();"); }, 60000);
+                         script function stopItem() { #{onStopJs}; }
+                         script setTimeout();
+
+                    td #{item.tags}

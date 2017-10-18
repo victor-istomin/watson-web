@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var toggle = require('./routes/toggle');
 
 var app = express();
 
@@ -22,8 +23,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
+app.use('/',       index);
+app.use('/toggle', toggle);
+app.use('/users',  users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -32,8 +34,12 @@ app.use(function(req, res, next) {
   next(err);
 });
 
+var console = require('console');
+
 // error handler
 app.use(function(err, req, res, next) {
+  console.log("Error: " + JSON.stringify(err));
+
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
