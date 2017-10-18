@@ -28,8 +28,8 @@ function ConvertJsonToLog(jsonString)
         const recentMs = 60 * 1000; // consider item as just started during this interval
         let i = {
             date:      start.toLocaleDateString(),
-            startTime: start.toLocaleTimeString(),
-            stopTime:  stop.toLocaleTimeString(),
+            startTime: start.toISOString(),
+            stopTime:  stop.toISOString(),
             start:     start,
             stop:      stop,
             duration:  countdown(start, stop, durationUnits).toString(),

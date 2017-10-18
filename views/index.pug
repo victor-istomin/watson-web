@@ -1,6 +1,7 @@
 extends layout
 block content
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+  script(src='/javascripts/timeFormatter.js')
 
   h1= title
   h2 Current log:
@@ -12,16 +13,16 @@ block content
           table
             thead
               tr(class='header')
-                th Start
-                th Stop
+                th Time
                 th Duration
                 th Project
                 th Tags
             tbody
                 for item in daySummary.items
                   tr(class='workitem')
-                    td #{item.startTime}
-                    td #{item.stopTime}
+                    td
+                      -var stopString = item.isActive ? '' : item.stopTime;
+                      script Iso8601ToTimespan("#{item.startTime}", "#{stopString}", document)
                     td #{item.duration}
                     td
                       -var reloadJs  = "window.location.reload(); return false;";
