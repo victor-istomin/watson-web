@@ -1,46 +1,56 @@
 extends layout
-block content
-  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
-  script(src='/javascripts/timeFormatter.js')
-  meta(name="viewport" content="width=device-width, initial-scale=0.7")
 
-  h1= title
-  h2 Current log:
-  for daySummary in watsonLog
-        -var tasks = daySummary.items
-        -var day   = daySummary.date + ": " + daySummary.totalTime
-        h3 #{day}
-        div
-          table
-            thead
-              tr(class='header')
+mixin DisplayWorkItem(item)
+    tr(class='workitem')
+        td
+            -var stopString = item.isActive ? '' : item.stopTime;
+            script Iso8601ToTimespan("#{item.startTime}", "#{stopString}", document)
+        td #{item.duration}
+        td
+            -var reloadJs   = "window.location.reload(); return false;";
+            -var onStartJs  = item.isActive ? reloadJs : ("$.post('toggle', {project: '" + item.project + "', type:'start' }).always(function(){" + reloadJs + "}); return false;");
+            -var stopAction = item.isJustStarted ? "cancel (60s left)" : "stop";
+            -var onCancelJs = "$.post('toggle', {project: 'none', type:'cancel' }).always(function() {" + reloadJs + "}); return false;";
+            -var onStopJs   = "$.post('toggle', {project: 'none', type:'stop' }).always(function(){" + reloadJs + "}); return false;";
+            -var linkClass  = item.isActive ? "button" : "buttonStart";
+
+            a(class=linkClass href='#' onclick=onStartJs) #{item.project}
+            if item.isActive
+                =" "
+                a(class='buttonStop' href='#' onclick=item.isJustStarted ? onCancelJs : onStopJs) #{stopAction}
+
+            if item.isJustStarted
+                script setTimeout(function(){ $("a.buttonStop").html('stop'); $("a.buttonStop").attr("onclick", "return stopItem();"); }, 60000);
+                script function stopItem() { #{onStopJs}; }
+                script setTimeout();
+
+        td #{item.tags}
+
+mixin DisplayDayTable(daySummaryItems)
+    table
+        thead
+            tr(class='header')
                 th Time
                 th Duration
                 th Project
                 th Tags
-            tbody
-                for item in daySummary.items
-                  tr(class='workitem')
-                    td
-                      -var stopString = item.isActive ? '' : item.stopTime;
-                      script Iso8601ToTimespan("#{item.startTime}", "#{stopString}", document)
-                    td #{item.duration}
-                    td
-                      -var reloadJs  = "window.location.reload(); return false;";
-                      -var onStartJs = item.isActive ? reloadJs : ("$.post('toggle', {project: '" + item.project + "', type:'start' }).always(function(){" + reloadJs + "}); return false;");
-                      -var stopAction = item.isJustStarted ? "cancel (60s left)" : "stop";
-                      -var onCancelJs = "$.post('toggle', {project: 'none', type:'cancel' }).always(function() {" + reloadJs + "}); return false;";
-                      -var onStopJs   = "$.post('toggle', {project: 'none', type:'stop' }).always(function(){" + reloadJs + "}); return false;";
-                      -var linkClass = item.isActive ? "button" : "buttonStart";
+        tbody
+            for item in daySummaryItems
+                +DisplayWorkItem(item)
 
-                      a(class=linkClass href='#' onclick=onStartJs) #{item.project}
-                      if item.isActive
-                         =" "
-                         a(class='buttonStop' href='#' onclick=item.isJustStarted ? onCancelJs : onStopJs) #{stopAction}
+block content
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+    script(src='/javascripts/timeFormatter.js')
+    meta(name="viewport" content="width=device-width, initial-scale=0.7")
 
-                      if item.isJustStarted
-                         script setTimeout(function(){ $("a.buttonStop").html('stop'); $("a.buttonStop").attr("onclick", "return stopItem();"); }, 60000);
-                         script function stopItem() { #{onStopJs}; }
-                         script setTimeout();
+    h1= title
+    h2 Current log:
+    for daySummary in watsonLog
+        -var tasks = daySummary.items
+        -var day   = daySummary.date + ": " + daySummary.totalTime
+        h3 #{day}
+        div(class="container")
+            div(class="workLog")
+                +DisplayDayTable(daySummary.items)
 
-                    td #{item.tags}
+
