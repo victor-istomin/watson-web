@@ -62,10 +62,29 @@ function ConvertJsonToLog(jsonString)
         let itemsUnsorted = byDate[dateString];
         let durationTotal = itemsUnsorted.reduce( (acc, current) => (acc + duration(current)), 0);
 
+        let projects = {};
+        for (let record of itemsUnsorted)
+        {
+            let durationMs = record.stop - record.start;
+            if (!projects[record.project])
+                projects[record.project] = durationMs;
+            else
+                projects[record.project] += durationMs;
+        }
+
+        let totalsSorted = [];
+        for (let projectName in projects)
+        {
+            let totalString = countdown(0, projects[projectName], durationUnits).toString();
+            totalsSorted.push({ project: projectName, total: projects[projectName], totalString: totalString });
+        }
+        totalsSorted.sort( (a,b) => (a.total < b.total) );
+
         let dateSummary = {
             date:      dateString,
             totalTime: countdown(0, durationTotal, durationUnits).toString(),
             items:     itemsUnsorted,
+            projects:  totalsSorted,
         };
 
         dateSummary.items.sort( (a,b) => (a.start > b.start) );
@@ -74,8 +93,6 @@ function ConvertJsonToLog(jsonString)
     }
 
     sorderDates.sort( (a,b) => (a.items[0].start < b.items[0].start) );
-
-//    console.log(JSON.stringify(byDate, null, 2));
     return sorderDates;
 }
 
