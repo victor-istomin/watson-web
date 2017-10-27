@@ -1,12 +1,13 @@
 # watson-web
 
-A nodejs web-interface to [[https://github.com/TailorDev/Watson/ Watson time tracker]
+A nodejs web-interface to [Watson time tracker](https://github.com/TailorDev/Watson/)
 
-== Requirements: ==
- * [[https://github.com/TailorDev/Watson/ Watson]]. Ensure you're using version with JSON log support, for example master 
+## Requirements:
+
+ * [Watson time tracker](https://github.com/TailorDev/Watson/). Ensure you're using version with JSON log support, for example actual master should work fine
  * node & npm
 
-== Installation ==
+## Installation 
 
  * install watson
  * checkout watson-web
@@ -16,7 +17,7 @@ A nodejs web-interface to [[https://github.com/TailorDev/Watson/ Watson time tra
     cd watson-web
     npm start
 
-== Usage ==
+## Usage
 
 Web-intrface will be available on port 3000. You could configure your gouter to forward connections from local network/ WAN to port 3000 on your server
 
