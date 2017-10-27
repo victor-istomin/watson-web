@@ -12,10 +12,11 @@ A nodejs web-interface to [Watson time tracker](https://github.com/TailorDev/Wat
  * install watson
  * checkout watson-web
  * schedule watson-web server start, e.g. in tmux:
-
+```shell
     tmux
     cd watson-web
     npm start
+```
 
 ## Usage
 
