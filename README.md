@@ -4,7 +4,7 @@ A nodejs web-interface to [Watson time tracker](https://github.com/TailorDev/Wat
 
 ## Requirements:
 
- * [Watson time tracker](https://github.com/TailorDev/Watson/). Ensure you're using version with JSON log support, for example actual master should work fine
+ * [Watson time tracker](https://github.com/TailorDev/Watson/). Ensure you're using version with JSON log support, for example actual master should work fine. Version from this project subomdules should work fine too.
  * node & npm
 
 ## Installation 
