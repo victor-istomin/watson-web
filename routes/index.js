@@ -5,10 +5,6 @@ var router = express.Router();
 var cmd = require('node-cmd');
 var countdown = require('countdown');
 
-/**/
-//var console = require('console');
-/**/
-
 function getAsync(commandLine, converter)
 {
     converter = converter ? converter : (s) => s;
@@ -98,7 +94,6 @@ function ConvertJsonToLog(jsonString)
 
 
 const getLogPromise = () => getAsync('watson log --current --json', ConvertJsonToLog);
-//const getReportPromise = () => getAsync('watson report --current');
 
 
 /* GET page. */
@@ -107,8 +102,6 @@ router.get('/', function(req, response, next) {
         response.render('index', {
             title:       'Watson web',
             watsonLog:    result[0],
-//            watsonStat:   result[1]
-//            watsonReport: result[2]
         });
     });
 });
