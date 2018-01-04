@@ -11,13 +11,17 @@ A nodejs web-interface to [Watson time tracker](https://github.com/TailorDev/Wat
 
  * install watson
  * install watson-web
- ```shell
+```shell
 git clone git@github.com:victor-istomin/watson-web.git
 cd watson-web
 npm install
 
 # check if it works:
 npm start
+```
+ * ensure watson's options.stop_on_start is on
+```shell
+watson config options.stop_on_start 1
 ```
 
  * schedule or perform manually watson-web server start, e.g. in tmux:
