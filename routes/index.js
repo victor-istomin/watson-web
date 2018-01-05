@@ -62,17 +62,32 @@ function ConvertJsonToLog(jsonString)
         for (let record of itemsUnsorted)
         {
             let durationMs = record.stop - record.start;
+            if (durationMs < 60 * 1000)
+                continue;   // filter out accidental switches
+
             if (!projects[record.project])
-                projects[record.project] = durationMs;
+            {
+                projects[record.project] = { duration: durationMs, occurrences: 1 };
+            }
             else
-                projects[record.project] += durationMs;
+            {
+                projects[record.project].duration += durationMs;
+                projects[record.project].occurrences += 1;
+            }
         }
 
         let totalsSorted = [];
         for (let projectName in projects)
         {
-            let totalString = countdown(0, projects[projectName], durationUnits).toString();
-            totalsSorted.push({ project: projectName, total: projects[projectName], totalString: totalString });
+            let totalString = countdown(0, projects[projectName].duration, durationUnits).toString();
+            let average = projects[projectName].duration / projects[projectName].occurrences;
+            let averageString = countdown(0, average, durationUnits).toString();
+
+            totalsSorted.push({
+                project: projectName,
+                total: projects[projectName].duration,
+                averageString: averageString,
+                totalString: totalString });
         }
         totalsSorted.sort( (a,b) => (a.total < b.total) );
 

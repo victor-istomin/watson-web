@@ -44,11 +44,13 @@ mixin DisplaySummary(totals)
             tr(class='headerSummary')
                 th Total
                 th Time
+                th Average
         tbody
             for total in totals
                 tr
                     td #{total.project}
                     td #{total.totalString}
+                    td #{total.averageString}
 
 block content
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
