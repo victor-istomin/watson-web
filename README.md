@@ -31,6 +31,8 @@ cd watson-web
 npm start
 ```
 
+ * copy any icon into project-root/public/favicon.ico
+
 ## Usage
 
 Web-intrface will be available on port 3000. You could configure your gouter to forward connections from local network/ WAN to port 3000 on your server
